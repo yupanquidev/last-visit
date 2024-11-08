@@ -1,0 +1,20 @@
+{
+  "imports": {
+    "hono": "jsr:@hono/hono@^4.6.9"
+  },
+  "tasks": {
+    "start": "deno run --allow-net --unstable-kv main.ts"
+  },
+  "compilerOptions": {
+    "jsx": "precompile",
+    "jsxImportSource": "hono/jsx"
+  },
+  "deploy": {
+    "project": "adfd5ac2-4458-40e4-8707-0a56458cfdf3",
+    "exclude": [
+      "**/node_modules"
+    ],
+    "include": [],
+    "entrypoint": "main.ts"
+  }
+}
