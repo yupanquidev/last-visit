@@ -2,26 +2,20 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { serveStatic } from 'hono/deno'
 import { streamSSE } from 'hono/streaming'
+import type { LastVisit } from '../src/types.d.ts'
 
 const db = await Deno.openKv()
-
 const app = new Hono()
 let i = 0
 
-interface LastVisit {
-  country: string
-  city: string
-  flag: string
-}
-
 app.use(cors())
-
 app.get('/', serveStatic({ path: './index.html' }))
 
 app.post('/visit', async (c) => {
-  const { city, flag, country } = await c.req.json<LastVisit>()
+  const { city, flag, country  } = await c.req.json<LastVisit>()
 
-  await db.atomic()
+  await db
+    .atomic()
     .set(["lastVisit"], { country, city, flag })
     .sum(["visits"], 1n)
     .commit()
@@ -37,10 +31,13 @@ app.get('/visit', (c) => {
       const { value } = entry[0]
 
       if (value != null) {
-        await stream.writeSSE({ data: JSON.stringify(value), event: 'update', id: String(i++) })
+        await stream.writeSSE({
+          data: JSON.stringify(value),
+          event: 'update',
+          id: String(i++)
+        })
       }
     }
-
   })
 })
 
