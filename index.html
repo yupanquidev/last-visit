@@ -30,8 +30,8 @@
   })
 
   const source = new EventSource('/visit')
-  const $last = document.getElementById('last')
-  const $next = document.getElementById('next')
+  const last = document.getElementById('last')
+  const next = document.getElementById('next')
   let ready = true
 
   source.addEventListener('update', (event) => {
@@ -39,25 +39,25 @@
 
     const { city, country, flag } = JSON.parse(event.data)
     const message = `Last visit from ${city}, ${country} ${flag}`
-    const isLastEmpty = $last.innerHTML === ''
+    const isLastEmpty = last.innerHTML === ''
 
     if (isLastEmpty) {
-      $last.innerHTML = message
+      last.innerHTML = message
       return
     }
 
-    $next.innerHTML = message
+    next.innerHTML = message
 
-    $next.style.animation = 'fadeInUp 1s ease-in-out forwards'
-    $last.style.animation = 'fadeOutUp 1s ease-in-out forwards'
+    next.style.animation = 'fadeInUp 1s ease-in-out forwards'
+    last.style.animation = 'fadeOutUp 1s ease-in-out forwards'
     ready = false
 
-    $next.onanimationend = () => {
-      $next.style.animation = ''
-      $last.style.animation = ''
+    next.onanimationend = () => {
+      next.style.animation = ''
+      last.style.animation = ''
 
-      $last.innerHTML = message
-      $next.innerHTML = ''
+      last.innerHTML = message
+      next.innerHTML = ''
       ready = true
     }
   })
